@@ -1,0 +1,75 @@
+const express = require('express');
+const { model, default: mongoose } = require('mongoose');
+
+const router = express.Router();
+
+model.exports = router;
+
+router.get("/user", (req, res) => {
+    res.send("API User")
+});
+
+const userModel = require('../model/userModel');
+
+const COMMON = require('../Common/COMMON');
+
+router.get('/listUser', async(req, res) => {
+    await mongoose.connect(COMMON.uri);
+
+    let users = await userModel.find();
+
+    res.send(users);
+})
+
+// Them tai khoan moi
+router.post('/addUser', async(req, res) => {
+    try {
+
+        const {hoTen, username, password, email, diaChi, dienThoai, trangThai} = req.body;
+        const newUser = new userModel({hoTen, username, password, email, diaChi, dienThoai, trangThai});
+        // Lưu tài khoản user mới
+        await newUser.save();
+        res.status(201).json({message: 'Them tai khoan thanh cong'});
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+})
+
+// Sửa tài khoản User
+router.put("/update/:id", async(req, res) => {
+    try {
+        await mongoose.connect(COMMON.uri);
+
+        const {hoTen, username, password, email, diaChi, dienThoai, trangThai} = req.body;
+
+        // kiểm tra tất cả các trường càn thiết đã được cung cấp chưa
+        if(!hoTen || !username || !password || !email || !diaChi || !dienThoai || !trangThai) {
+            return res.status(400).json({error: "Thiếu thông tin User"});
+        }
+
+        // Kiểm tra User có trong mongodb không 
+        const userid = req.params.id;
+        const existingUser = await userModel.findById(userid);
+        if(!existingUser) {
+            return res.status(400).json({error: "Không tìm thấy tài khoản User"});
+        }
+
+        // Cập nhật thông tin User
+        existingUser.hoTen = hoTen;
+        existingUser.username = username;
+        existingUser.password = password;
+        existingUser.email = email;
+        existingUser.diaChi = diaChi;
+        existingUser.dienThoai = dienThoai;
+        existingUser.trangThai = trangThai;
+
+        // Lưu tài khoản User đã sửa đổi vào mongodb
+        const update = await existingUser.save();
+
+        res.status(200).json(update);
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+})
+
+module.exports = router;
