@@ -5,7 +5,6 @@ const Scheme = mongoose.Schema;
 const Users = new Scheme({
     hoTen: {
         type: String, 
-        require: true
     },
     username: {
         type: String,
@@ -17,7 +16,6 @@ const Users = new Scheme({
     },
     email: {
         type: String,
-        require: true
     },
     diaChi: {
         type: String
@@ -27,6 +25,15 @@ const Users = new Scheme({
     },
     trangThai: {
         type: Number
+    },
+    birthday: {
+        type: Date
+    },
+    image: {
+        type: String
+    },
+    gender: {
+        type: String
     }
 });
 

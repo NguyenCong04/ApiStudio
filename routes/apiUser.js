@@ -24,7 +24,7 @@ router.get("/listUser", async (req, res) => {
 // Them tai khoan moi
 router.post("/addUser", async (req, res) => {
   try {
-    const { hoTen, username, password, email, diaChi, dienThoai, trangThai } =
+    const { hoTen, username, password, email, diaChi, dienThoai, trangThai,birthday,image,gender } =
       req.body;
     const newUser = new userModel({
       hoTen,
@@ -34,6 +34,9 @@ router.post("/addUser", async (req, res) => {
       diaChi,
       dienThoai,
       trangThai,
+      birthday,
+      image,
+      gender,
     });
     // Lưu tài khoản user mới
     await newUser.save();
