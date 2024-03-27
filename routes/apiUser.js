@@ -117,4 +117,36 @@ router.post("/login", async (req, res) => {
   }
 });
 
+// Dang ký
+router.post('/register', async (req, res) => {
+  try {
+    const {hoTen, username, password, email, diaChi, dienThoai} = req.body;
+
+
+    // Kiểm tra xem email đã được sử dụng chưa
+    const existingEmail = await userModel.findOne({email: email});
+    if(existingEmail) {
+      return res.status(400).json({error: "Email đã được sử dụng"});
+    }  
+
+    // Tạo tài khoản mới
+    const newUser = new userModel({
+      hoTen,
+      username, 
+      password,
+      email, 
+      diaChi,
+      dienThoai,
+      trangThai: 0 //Set trang thai khi dang ky luoon bang 0
+    });
+
+    await newUser.save();
+
+    res.status(201).json({error: "Đăng ký tài khoản thành công"});
+  } catch (error) {
+    console.log("Router.post error:", error);
+    res.status(500).json(error);
+  }
+})
+
 module.exports = router;
