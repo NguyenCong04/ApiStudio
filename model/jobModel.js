@@ -11,6 +11,9 @@ const Jobs = new mongoose.Schema(
     endate: {
       type: String,
     },
+    nameNv: {
+      type: String,
+    },
     status: {
       type: Number,
     },
