@@ -24,8 +24,18 @@ router.get("/listUser", async (req, res) => {
 // Them tai khoan moi
 router.post("/addUser", async (req, res) => {
   try {
-    const { hoTen, username, password, email, diaChi, dienThoai, trangThai,birthday,image,gender } =
-      req.body;
+    const {
+      hoTen,
+      username,
+      password,
+      email,
+      diaChi,
+      dienThoai,
+      trangThai,
+      birthday,
+      image,
+      gender,
+    } = req.body;
     const newUser = new userModel({
       hoTen,
       username,
@@ -93,7 +103,6 @@ router.put("/update/:id", async (req, res) => {
 });
 
 //login
-
 router.post("/login", async (req, res) => {
   try {
     const email = req.body.email;
@@ -118,6 +127,14 @@ router.post("/login", async (req, res) => {
     console.log("router.post  error:", error);
     res.status(500).json(error);
   }
+});
+
+router.get("/listUser2", async (req, res) => {
+  await mongoose.connect(COMMON.uri);
+
+  let users = await userModel.find().select("-password");
+
+  res.send(users);
 });
 
 module.exports = router;

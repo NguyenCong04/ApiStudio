@@ -25,6 +25,7 @@ router.post("/post-job", async (rq, rs) => {
       name: data.name,
       stdate: data.stdate,
       endate: data.endate,
+      nameNv: data.nameNv,
       status: data.status,
       discriptions: data.discriptions,
     });
@@ -85,6 +86,7 @@ router.put("/update-job-by-id/:id", async (rq, rs) => {
       updateJob.name = data.name ?? updateJob.name;
       updateJob.stdate = data.stdate ?? updateJob.stdate;
       updateJob.endate = data.endate ?? updateJob.endate;
+      updateJob.nameNv = data.nameNv ?? updateJob.nameNv;
       updateJob.status = data.status ?? updateJob.status;
       updateJob.discriptions = data.discriptions ?? updateJob.discriptions;
 
