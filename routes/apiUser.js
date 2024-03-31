@@ -2,6 +2,7 @@ const express = require("express");
 const { model, default: mongoose } = require("mongoose");
 
 const router = express.Router();
+const upload = require("../config/multerConfig");
 
 model.exports = router;
 
@@ -17,9 +18,21 @@ router.get("/listUser", async (req, res) => {
   await mongoose.connect(COMMON.uri);
 
   let users = await userModel.find();
-
   res.send(users);
 });
+
+router.post("/uploadImage", upload.single("image"), async (req, res) => {
+  try {
+    // Lấy đường dẫn đến ảnh đã tải lên từ req.file
+    const imagePath = req.file.path;
+
+    // Trả về đường dẫn đến ảnh đã tải lên
+    res.status(201).json({ imagePath: imagePath });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 
 // Them tai khoan moi
 router.post("/addUser", async (req, res) => {
@@ -33,9 +46,10 @@ router.post("/addUser", async (req, res) => {
       dienThoai,
       trangThai,
       birthday,
-      image,
       gender,
     } = req.body;
+
+    const image = req.body.imagePath;
     const newUser = new userModel({
       hoTen,
       username,

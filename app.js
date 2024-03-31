@@ -5,14 +5,15 @@ var logger = require('morgan');
 const mongoose = require('mongoose');
 
 const RES = require('./Common/COMMON');
-const uri = RES.uri;
+const uri = RES.uri; 
 
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
-
+var cors = require('cors');
+app.use(cors());
 
 const database = require('./config/db');
 const apiJobMobile = require('./routes/apiJob');
