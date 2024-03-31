@@ -4,18 +4,27 @@ const ServiceSchema = mongoose.Schema({
     tenDv : {
         type: String,
     },
-    trangThai: {
-        type: Boolean,
+    soLuong: {
+        type: Number,
     },
     giaTien: {
+        type: Number,
+    },
+    chitiet: {
         type: String,
     },
-    moTa: {
-        type: String,
+    anh: {
+        type: [String], 
     },
-    anh:{
-        type: String
-    }
+    yeuthich:{
+        type: Number
+    },
+    kichthuoc:{
+        type: [String] ,
+    },
+    giamgia:{
+        type: Number
+    }   
 });
 
 const ServiceModel = new mongoose.model('service', ServiceSchema);

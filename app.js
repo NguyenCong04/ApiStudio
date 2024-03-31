@@ -1,4 +1,5 @@
 const express = require("express");
+const cloudinary = require("cloudinary");
 var app = express();
 const port = 3001;
 var logger = require('morgan');
@@ -23,6 +24,15 @@ const apiUserMobile = require('./routes/apiUser');
 
 app.use(express.json());
 app.use(logger('dev'))
+
+//keets nooi cloudinary
+cloudinary.v2.config({
+cloud_name: "dtxohfp9j",
+api_key: 373298766964934,
+api_secret: "NDeHY3Uo2iDWa_duFFjJaC3z4l4",
+
+
+});
 
 app.use('/apijob',apiJobMobile)
 

@@ -13,13 +13,13 @@ router.get('/', async (req, res) => {
 router.post('/add_service', async (req, res) => {
   try {
     await mongoose.connect(uri);
-    const { tenDv, trangThai, moTa, giaTien, anh } = req.body;
+    const { tenDv, soLuong, chitiet, giaTien, anh,kichthuoc,giamgia } = req.body;
 
-    if (!tenDv || !trangThai || !moTa || !giaTien || !anh) {
+    if (!tenDv || !soLuong || !chitiet || !giaTien || !anh) {
       return res.status(400).json({ error: "Thiếu thông tin sinh viên." });
     }
 
-    const newService = new ServiceModel({ tenDv, trangThai, moTa, giaTien, anh });
+    const newService = new ServiceModel({ tenDv, soLuong, giaTien, anh,chitiet,kichthuoc,giamgia });
 
     const save = await newService.save();
 
