@@ -1,3 +1,5 @@
+const { getDatURI } = require("../config/fetures");
+const cloudinary = require("cloudinary");
 const express = require("express");
 const { model, default: mongoose } = require("mongoose");
 
@@ -13,6 +15,7 @@ router.get("/user", (req, res) => {
 const userModel = require("../model/userModel");
 
 const COMMON = require("../Common/COMMON");
+const UserModel = require("../model/userModel");
 
 router.get("/listUser", async (req, res) => {
   await mongoose.connect(COMMON.uri);
@@ -21,17 +24,52 @@ router.get("/listUser", async (req, res) => {
   res.send(users);
 });
 
-router.post("/uploadImage", upload.single("image"), async (req, res) => {
+router.delete('/delete/:id', async (req, res) => {
   try {
-    // Lấy đường dẫn đến ảnh đã tải lên từ req.file
-    const imagePath = req.file.path;
 
-    // Trả về đường dẫn đến ảnh đã tải lên
-    res.status(201).json({ imagePath: imagePath });
+      const service_id = req.params.id;
+
+      const existingService = await UserModel.findById(service_id);
+      if (!existingService) {
+          return res.status(404).json({ error: "Không tìm thấy sinh viên." });
+      }
+
+      await userModel.findByIdAndDelete(service_id);
+
+      res.status(200).json({ message: "Xóa sinh viên thành công." });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+      console.error("Lỗi khi xóa sinh viên:", error);
+      res.status(500).json({ error: "Đã xảy ra lỗi khi xóa sinh viên." });
   }
 });
+
+router.put('/update-picture', upload.singleUpload, async (req, res) => {
+  try {
+    const file = getDatURI(req.file);
+
+    // Gửi hình ảnh lên Cloudinary
+    const cloudinaryResponse = await cloudinary.v2.uploader.upload(file.content);
+
+    // Lấy đường dẫn của hình ảnh từ phản hồi của Cloudinary
+    const imageUrl = cloudinaryResponse.secure_url;
+
+    // Lưu đường dẫn hình ảnh vào cơ sở dữ liệu (ví dụ: User)
+    // Ở đây tôi giả sử bạn đang cập nhật hình ảnh cho một user cụ thể (ví dụ: req.body.userId)
+    const userId = req.body.userId; // Đảm bảo bạn đã truyền userId từ client
+    const user = await userModel.findByIdAndUpdate(userId, { image: imageUrl }, { new: true });
+
+    res.status(200).send({
+      success: true,
+      message: "Update picture success",
+      user: user, // Trả về thông tin user đã được cập nhật hình ảnh mới,
+      imageUrl: imageUrl // Trả về đường dẫn hình ảnh mới
+    });
+  } catch (error) {
+    console.log("updatePicture error:", error);
+    res.status(500).json(error);
+  }
+});
+
 
 
 // Them tai khoan moi
@@ -47,9 +85,9 @@ router.post("/addUser", async (req, res) => {
       trangThai,
       birthday,
       gender,
+      image,
     } = req.body;
 
-    const image = req.body.imagePath;
     const newUser = new userModel({
       hoTen,
       username,
@@ -152,3 +190,5 @@ router.get("/listUser2", async (req, res) => {
 });
 
 module.exports = router;
+
+
