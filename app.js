@@ -19,6 +19,7 @@ const apiJobMobile = require('./routes/apiJob');
 const apiServiceMobile = require('./routes/apiService');
 
 const apiUserMobile = require('./routes/apiUser');
+const apikhachhangMobile = require("./routes/apiKhachHang");
 
 app.use(express.json());
 app.use(logger('dev'))
@@ -27,6 +28,8 @@ app.use('/apijob',apiJobMobile)
 
 app.use('/apiUser', apiUserMobile);
 app.use('/apiservice',apiServiceMobile)
+
+app.use("/apikhachhang", apikhachhangMobile)
 database.connect();
 
 
